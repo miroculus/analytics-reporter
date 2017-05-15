@@ -49,7 +49,7 @@ function generateReport(ViewId, target, callback){
 
 exports.handler = (event, context, callback) => {
   sites.split(',').forEach(function(value){
-    generateReport(value, '**REMOVED**', function(err, response, body){
+    generateReport(value, '**REPLACED**', function(err, response, body){
       if (!err && response.statusCode == 200) console.log(value + ' Message sent to Slack...')
       if (!err && response.statusCode != 200) console.log(value + ' Response !200:', body)
 
