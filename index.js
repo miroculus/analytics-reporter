@@ -16,9 +16,9 @@ function queryData(analytics, ViewId, next, callback) {
   analytics.data.ga.get({
     'auth': jwtClient,
     'ids': ViewId,
-    'start-date': 'yesterday',
-    'end-date': 'today',
-    'metrics': 'ga:uniquePageviews',
+    'start-date': '2daysAgo',
+    'end-date': '1daysAgo',
+    'metrics': 'ga:uniquePageviews,ga:newUsers,ga:sessionDuration,ga:users',
     'max-results': 25
   }, function (err, response) {
     if (err) {
@@ -39,7 +39,7 @@ function generateReport(ViewId, target, callback){
       let options = {
         url: SLACK_URL,
         method: 'POST',
-        form: 'payload={"channel": "#reports", "username": "Google Analytics", "text": "Yesterday pageviews for ' + message.profileInfo['profileName'] + ': ' + message.totalsForAllResults['ga:uniquePageviews'] + '", "icon_emoji": ":analytics:", "color": "green"}'
+        form: 'payload={"channel": "#reports", "username": "Google Analytics", "text": "*Yesterday pageviews for:* ' + message.profileInfo['profileName'] + '\n ' + '_Page Views:_ ' + message.totalsForAllResults['ga:uniquePageviews'] + '\n _New Users:_ ' + message.totalsForAllResults['ga:newUsers'] + '\n _Returning Users:_ ' + (message.totalsForAllResults['ga:uniquePageviews'] - message.totalsForAllResults['ga:newUsers']) + '\n _Session Duration:_ ' + message.totalsForAllResults['ga:sessionDuration'] + '\n _Users:_ ' + message.totalsForAllResults['ga:users'] + '", "icon_emoji": ":analytics:", "color": "green"}'
       }
 
       return request(options, callback)
@@ -47,7 +47,7 @@ function generateReport(ViewId, target, callback){
   });
 }
 
-//exports.handler = (event, context, callback) => {
+exports.handler = (event, context, callback) => {
   sites = sites.split(',')
   sites.forEach(function(value){
     generateReport(value, '**REMOVED**', function(err, response, body){
@@ -59,4 +59,4 @@ function generateReport(ViewId, target, callback){
       console.log(value + ' Operation completed')
     })
   })
-//}
+}
