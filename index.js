@@ -29,7 +29,7 @@ function queryData(analytics, ViewId, next, callback) {
   });
 }
 
-function generateReport(ViewId, target, callback){
+function generateReport(ViewId, callback){
   jwtClient.authorize(function (err, tokens) {
     if (err) return callback(err);
 
@@ -49,7 +49,7 @@ function generateReport(ViewId, target, callback){
 
 exports.handler = (event, context, callback) => {
   sites.split(',').forEach(function(value){
-    generateReport(value, '**REPLACED**', function(err, response, body){
+    generateReport(value, function(err, response, body){
       if (!err && response.statusCode == 200) console.log(value + ' Message sent to Slack...')
       if (!err && response.statusCode != 200) console.log(value + ' Response !200:', body)
 
